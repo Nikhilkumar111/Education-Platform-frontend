@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/navbar";
+import FooterSection from "@/components/footerSection";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,10 +27,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}   
       >
+   <div className="p-7 mx-2">
+  <Navbar isLoggedIn={false}/>
+</div>
+
+
         {children}
+     <FooterSection/>   
       </body>
     </html>
   );
 }
+
+
+{/* <Navbar
+  isLoggedIn={user !== null} // or your auth state
+  userName={user?.fullName}
+  userAvatar={user?.profilePic}
+/> */}
