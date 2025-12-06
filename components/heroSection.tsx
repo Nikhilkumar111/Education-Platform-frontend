@@ -13,9 +13,13 @@ import {
 import { motion } from "framer-motion";
 import Link from "next/link";
 
+
+
 interface HeroSectionProps {
   onNavigateToLogin?: () => void;
 }
+
+
 
 export function HeroSection({ onNavigateToLogin }: HeroSectionProps) {
   const scrollToAbout = () => {
