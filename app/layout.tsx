@@ -30,7 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}   
       >
    <div className="p-7 mx-2">
-  <Navbar isLoggedIn={true} userName="Nikhil" />
+  <Navbar isLoggedIn={false} userName="Nikhil" />
 </div>
 
 
