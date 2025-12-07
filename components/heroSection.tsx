@@ -106,7 +106,7 @@ export function HeroSection({ onNavigateToLogin }: HeroSectionProps) {
               className="flex flex-col sm:flex-row gap-4"
             >
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Link href="/Login">
+            <Link href="/login">
   <Button className="bg-slate-700 hover:bg-slate-800 text-white px-8 py-3 flex items-center gap-2 transition-all">
     Get Started
     <ArrowRight className="w-5 h-5" />

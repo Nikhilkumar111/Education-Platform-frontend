@@ -30,7 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}   
       >
    <div className="p-7 mx-2">
-  <Navbar isLoggedIn={false}/>
+  <Navbar isLoggedIn={true} userName="Nikhil" />
 </div>
 
 
@@ -47,3 +47,8 @@ export default function RootLayout({
   userName={user?.fullName}
   userAvatar={user?.profilePic}
 /> */}
+
+
+
+//hydration learning in the react for passing argument in the 
+// div so that the work will be happen 

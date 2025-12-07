@@ -142,7 +142,7 @@ const Login = () => {
             </p>
 
           <div className="grid grid-cols-2 gap-4">
-  <Link href="/SignUpAsTeacher" className="w-full">
+  <Link href="/signup/SignUpAsTeacher" className="w-full">
     <Button
       className="w-full border-yellow-300 bg-yellow-50 hover:bg-yellow-100 text-slate-800"
     >
@@ -150,7 +150,7 @@ const Login = () => {
     </Button>
   </Link>
 
-  <Link href="/SignUpAsStudent" className="w-full">
+  <Link href="/signup/SignUpAsStudent" className="w-full">
     <Button
       className="w-full border-blue-300 bg-blue-50 hover:bg-blue-100 text-slate-800"
     >
