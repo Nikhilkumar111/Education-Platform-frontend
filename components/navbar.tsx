@@ -118,7 +118,8 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, userAvatar }) => {
       <div className="mx-auto max-w-7xl flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 text-xl font-bold">
-        <Image src="/Logo.png" alt="Logo" width={32} height={32} />
+        <Image src="/logo.png" alt="Logo" width={32} height={32} />
+           
           Tutors Connect
         </Link>
 
