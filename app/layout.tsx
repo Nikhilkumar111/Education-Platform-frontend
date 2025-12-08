@@ -30,7 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}   
       >
    <div className="p-7 mx-2">
-  <Navbar isLoggedIn={false} userName="Nikhil" />
+  <Navbar isLoggedIn={true} userName="Nikhil" />
 </div>
 
 
@@ -52,3 +52,6 @@ export default function RootLayout({
 
 //hydration learning in the react for passing argument in the 
 // div so that the work will be happen 
+
+
+// Data Science → Machine Learning → Deep Learning → NLP → LLM Fundamentals → Prompt Engineering → HuggingFace → Fine-Tuning (LoRA/QLoRA) → RAG → Deployment (FastAPI/Docker/Cloud).
