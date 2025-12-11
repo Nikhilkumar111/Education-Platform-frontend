@@ -46,6 +46,10 @@ export default function RootLayout({
 }
 
 
+
+
+
+
 {/* <Navbar
   isLoggedIn={user !== null} // or your auth state
   userName={user?.fullName}
