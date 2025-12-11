@@ -17,7 +17,7 @@ export const Wallet: React.FC<WalletProps> = ({ walletBalance, onOpenWallet }) =
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <Card className="border-yellow-300 bg-gradient-to-br from-yellow-50 to-yellow-100 w-full max-w-md">
+      <Card className="border-yellow-300 bg-gradient-to-br from-yellow-50 to-yellow-100 w-full max-w-md ">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-yellow-700">
             <WalletIcon className="w-5 h-5" />

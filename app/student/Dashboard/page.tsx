@@ -29,7 +29,7 @@ const StudentDashboard = () => {
   return (
     <div>
 <Dashboard {...passingArgs} />
-<StudentProfile/>
+{/* <StudentProfile/> */}
 
 
 
@@ -40,15 +40,11 @@ const StudentDashboard = () => {
 
 
 
-<div className="display flex gap-5">
-     {/* //passing the wallet balance so that the wallet will work keep in mind  */}
+<div className="flex flex-col sm:flex-row gap-5 justify-center items-center sm:items-start">
   <Wallet walletBalance={5000} onOpenWallet={handleOpenWallet} />
-{/* //similarly for this also make this so that the communication section using  */}
-{/* to pass the argument */}
-
   <Communication onOpenMessages={handleOpenMessages} />
-
 </div>
+
     </div>
   )
 }

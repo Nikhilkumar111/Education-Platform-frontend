@@ -13,8 +13,10 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 
+
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+
 
 import {
   DropdownMenu,
@@ -23,6 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 
 
 function ListItem({
@@ -56,13 +59,14 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, userAvatar }) => {
-  // MENUS -----------------------------------------------------
+
+
   const dashboardMenu = [
-    { title: "Overview", description: "Quick insights & summary", href: "/overview" },
-    { title: "Performance", description: "Progress reports", href: "/performance" },
-    { title: "Schedule", description: "Upcoming classes", href: "/schedule" },
-    { title: "Assignments", description: "Tasks & submissions", href: "/assignments" },
-    { title: "Reports", description: "Downloadable performance", href: "/reports" },
+    { title: "Overview", description: "Quick insights & summary", href: "/student/overview" },
+    { title: "Performance", description: "Progress reports", href: "/student/performance" },
+    { title: "Schedule", description: "Upcoming classes", href: "/student/schedule" },
+    { title: "Assignments", description: "Tasks & submissions", href: "/student/assignments" },
+    { title: "Reports", description: "Downloadable performance", href: "/student/reports" },
   ];
 
   const teachersMenu = [
@@ -72,16 +76,16 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, userAvatar }) => {
   ];
 
   const attendanceMenu = [
-    { title: "Today’s Attendance", description: "Daily presence record", href: "/attendance/today" },
-    { title: "Monthly Attendance", description: "Attendance history", href: "/attendance/month" },
-    { title: "Attendance Report", description: "Download attendance data", href: "/attendance/report" },
+    { title: "Today’s Attendance", description: "Daily presence record", href: "/student/attendance/today" },
+    { title: "Monthly Attendance", description: "Attendance history", href: "/student/attendance/month" },
+    { title: "Attendance Report", description: "Download attendance data", href: "/student/attendance/report" },
   ];
 
   const achievementMenu = [
-    { title: "Badges", description: "Unlocked badges", href: "/achievements/badges" },
-    { title: "Certificates", description: "Earned certificates", href: "/achievements/certificates" },
-    { title: "Rewards", description: "Points & rewards", href: "/achievements/rewards" },
-    { title: "Leaderboard", description: "Top performers", href: "/achievements/leaderboard" },
+    { title: "Badges", description: "Unlocked badges", href: "/student/achievements/badges" },
+    { title: "Certificates", description: "Earned certificates", href: "/student/achievements/certificates" },
+    { title: "Rewards", description: "Points & rewards", href: "/student/achievements/rewards" },
+    { title: "Leaderboard", description: "Top performers", href: "/student/achievements/leaderboard" },
   ];
 
   const beforeLogin = [

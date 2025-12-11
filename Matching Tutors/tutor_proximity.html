@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TutorConnect Proximity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .animate-spin-slow {
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+
+    <header class="bg-indigo-600 text-white p-6 shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">🧭</span>
+                <h1 class="text-2xl font-bold tracking-tight">TutorConnect <span class="text-indigo-200 font-light">Proximity</span></h1>
+            </div>
+            <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                <button onclick="switchTab('upload')" class="tab-btn whitespace-nowrap px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 bg-white text-indigo-700" data-tab="upload">
+                    📤 Load Data
+                </button>
+                <button onclick="switchTab('add-student')" class="tab-btn whitespace-nowrap px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 bg-indigo-700 hover:bg-indigo-500 text-white" data-tab="add-student">
+                    ➕ Add Student
+                </button>
+                <button onclick="switchTab('dashboard')" class="tab-btn whitespace-nowrap px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 bg-indigo-700 hover:bg-indigo-500 text-white" data-tab="dashboard">
+                    🔍 Find Tutors
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 relative min-h-[80vh]">
+        
+        <div id="upload-tab" class="tab-content animate-fade-in max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center">
+            <h2 class="text-2xl font-bold mb-4">Initialize Data 📂</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-6 border-2 border-dashed rounded-xl border-slate-300 hover:border-indigo-400 transition-colors">
+                    <span class="text-4xl block mb-2">👤</span>
+                    <label class="block">
+                        <span class="bg-indigo-600 text-white px-3 py-1 rounded text-sm cursor-pointer hover:bg-indigo-700 transition">Load Students</span>
+                        <input type="file" accept=".csv" class="hidden" onchange="handleFileUpload(event, 'students')" />
+                    </label>
+                    <p class="mt-2 text-xs text-slate-500"><span id="student-count">0</span> Loaded</p>
+                </div>
+                <div class="p-6 border-2 border-dashed rounded-xl border-slate-300 hover:border-indigo-400 transition-colors">
+                    <span class="text-4xl block mb-2">📖</span>
+                    <label class="block">
+                        <span class="bg-indigo-600 text-white px-3 py-1 rounded text-sm cursor-pointer hover:bg-indigo-700 transition">Load Tutors</span>
+                        <input type="file" accept=".csv" class="hidden" onchange="handleFileUpload(event, 'tutors')" />
+                    </label>
+                    <p class="mt-2 text-xs text-slate-500"><span id="tutor-count">0</span> Loaded</p>
+                </div>
+            </div>
+
+            <div class="mt-8 border-t border-slate-100 pt-6">
+                <button onclick="handleMatchButton()" class="w-full sm:w-auto bg-green-600 text-white text-lg font-bold py-3 px-10 rounded-xl shadow-lg hover:bg-green-700 hover:shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center gap-2 mx-auto">
+                    Match Tutors
+                </button>
+                <p class="text-slate-400 text-xs mt-3">Upload your CSVs first, then click match!</p>
+            </div>
+        </div>
+
+        <div id="add-student-tab" class="tab-content hidden max-w-xl mx-auto bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+            <div class="bg-indigo-50 p-6 border-b border-indigo-100">
+                <h2 class="text-xl font-bold text-indigo-900">👤 Add New Student</h2>
+                <p class="text-indigo-600 text-sm">Manually register a student for matching.</p>
+            </div>
+            
+            <form onsubmit="handleAddStudent(event)" class="p-6 space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Student Name</label>
+                    <input 
+                        type="text" 
+                        id="newStudent-name"
+                        class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                        placeholder="e.g. Rahul Verma"
+                    />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Subject Needed</label>
+                        <input 
+                            type="text" 
+                            id="newStudent-subject"
+                            class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                            placeholder="e.g. Physics"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Grade (Optional)</label>
+                        <input 
+                            type="text" 
+                            id="newStudent-grade"
+                            class="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                            placeholder="e.g. 10"
+                        />
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-sm font-medium text-slate-700">Location</label>
+                        <button 
+                            type="button" 
+                            onclick="getLocation()"
+                            id="location-btn"
+                            class="text-xs flex items-center gap-1 bg-indigo-100 text-indigo-700 px-2 py-1 rounded hover:bg-indigo-200 transition"
+                        >
+                            🎯 Detect My Location
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input 
+                            type="number" 
+                            step="any"
+                            id="newStudent-lat"
+                            class="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                            placeholder="Latitude"
+                        />
+                        <input 
+                            type="number" 
+                            step="any"
+                            id="newStudent-long"
+                            class="w-full p-2 border border-slate-300 rounded-lg text-sm"
+                            placeholder="Longitude"
+                        />
+                    </div>
+                </div>
+
+                <button 
+                    type="submit" 
+                    class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-md hover:bg-indigo-700 transition"
+                >
+                    💾 Save & Find Tutors
+                </button>
+            </form>
+        </div>
+
+        <div id="dashboard-tab" class="tab-content hidden h-full relative" style="min-height: calc(100vh - 200px);">
+            
+            <div id="student-selection-overlay" class="absolute inset-0 z-20 flex items-start pt-20 justify-center bg-slate-50/90 backdrop-blur-sm hidden animate-fade-in">
+                <div class="bg-white w-full max-w-lg p-6 rounded-2xl shadow-2xl border border-indigo-100 transform transition-all flex flex-col max-h-[70vh]">
+                    <h3 class="text-2xl font-bold text-center text-slate-800 mb-2">Select a Student</h3>
+                    <p class="text-center text-slate-500 text-sm mb-4">Who are we matching tutors for today?</p>
+                    
+                    <div class="mb-4 relative px-2">
+                        <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">🔍</span>
+                        <input 
+                            type="text" 
+                            id="student-search" 
+                            onkeyup="filterOverlayList()"
+                            placeholder="Search by name..." 
+                            class="w-full pl-11 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition bg-slate-50 focus:bg-white"
+                        />
+                    </div>
+
+                    <div id="overlay-student-list" class="space-y-2 overflow-y-auto custom-scroll p-2 flex-1">
+                        </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-6 h-full">
+                <div id="dashboard-sidebar" class="md:col-span-4 lg:col-span-3 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden opacity-50 pointer-events-none transition-all duration-500">
+                    <div class="p-4 border-b bg-slate-50 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-700">Student List</h3>
+                        <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full" id="list-count">0</span>
+                    </div>
+                    <div id="student-list" class="overflow-y-auto flex-1 p-2 space-y-1 custom-scroll">
+                        <div class="p-4 text-center text-slate-400 text-sm">No students yet.</div>
+                    </div>
+                </div>
+
+                <div id="results-container" class="md:col-span-8 lg:col-span-9 overflow-y-auto pr-2 relative">
+                    <div class="h-full flex flex-col items-center justify-center text-slate-300">
+                        <span class="text-6xl mb-4 opacity-20">👈</span>
+                        <p class="text-lg font-medium text-slate-400">Waiting for selection...</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // STATE
+        let students = [];
+        let tutors = [];
+        let selectedStudentId = '';
+        let activeTab = 'upload';
+        let isLocating = false;
+
+        // UTILITY FUNCTIONS
+        const parseCSV = (text) => {
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            if (lines.length === 0) return [];
+            const headers = lines[0].split(',').map(h => h.trim());
+            return lines.slice(1).map(line => {
+                const values = line.split(','); 
+                const entry = {};
+                headers.forEach((header, index) => {
+                    let val = values[index] ? values[index].trim() : '';
+                    if (!isNaN(val) && val !== '') val = parseFloat(val);
+                    entry[header] = val;
+                });
+                return entry;
+            });
+        };
+        // Haversine Formula
+        const calculateDistance = (lat1, lon1, lat2, lon2) => {
+            if (!lat1 || !lon1 || !lat2 || !lon2) return Infinity;
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * (Math.PI / 180);
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
+            const a = 
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * Math.sin(dLon / 2) * Math.sin(dLon / 2); 
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
+            return parseFloat((R * c).toFixed(2));
+        };
+
+        // TAB SWITCHING
+        const switchTab = (tabName) => {
+            activeTab = tabName;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-white', 'text-indigo-700');
+                el.classList.add('bg-indigo-700', 'hover:bg-indigo-500', 'text-white');
+            });
+            
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.remove('bg-indigo-700', 'hover:bg-indigo-500', 'text-white');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('bg-white', 'text-indigo-700');
+        };
+
+        // RENDER LIST FUNCTION (Refactored to support filter)
+        const renderOverlayItems = (studentArray) => {
+            const overlayList = document.getElementById('overlay-student-list');
+            
+            if (studentArray.length === 0) {
+                overlayList.innerHTML = '<div class="text-center text-slate-400 py-4">No results found bruh. 🤷‍♂️</div>';
+                return;
+            }
+
+            overlayList.innerHTML = studentArray.map(student => `
+                <button 
+                    onclick="selectStudentFromOverlay('${student.student_id}')"
+                    class="w-full text-left p-4 rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50 hover:shadow-md transition-all group flex justify-between items-center"
+                >
+                    <div>
+                        <div class="font-bold text-slate-700 group-hover:text-indigo-700">${student.student_name}</div>
+                        <div class="text-xs text-slate-500">Need: ${student.required_subject}</div>
+                    </div>
+                    <span class="text-xl group-hover:scale-125 transition-transform">👉</span>
+                </button>
+            `).join('');
+        }
+
+        // FILTER FUNCTION FOR SEARCH BAR
+        const filterOverlayList = () => {
+            const query = document.getElementById('student-search').value.toLowerCase();
+            const filtered = students.filter(s => s.student_name.toLowerCase().includes(query));
+            renderOverlayItems(filtered);
+        }
+
+        // HANDLE MATCH BUTTON CLICK (Show Overlay)
+        const handleMatchButton = () => {
+            if (students.length === 0) {
+                alert("Bruh. You haven't loaded any student data yet.");
+                return;
+            }
+            if (tutors.length === 0) {
+                alert("You need tutors to match with. Load the tutor CSV. 📂");
+                return;
+            }
+            
+            // Switch to dashboard
+            switchTab('dashboard');
+            
+            // Clear Search & Populate List
+            document.getElementById('student-search').value = '';
+            renderOverlayItems(students);
+
+            // Show Overlay & Dim Sidebar
+            document.getElementById('student-selection-overlay').classList.remove('hidden');
+            document.getElementById('dashboard-sidebar').classList.add('opacity-50', 'pointer-events-none');
+            
+            // Reset Results
+            document.getElementById('results-container').innerHTML = `
+                <div class="h-full flex flex-col items-center justify-center text-slate-300">
+                    <span class="text-6xl mb-4 opacity-20">🧭</span>
+                    <p>Select a student to see matches</p>
+                </div>
+            `;
+        };
+
+        // SELECT FROM OVERLAY
+        const selectStudentFromOverlay = (studentId) => {
+            // Hide Overlay
+            document.getElementById('student-selection-overlay').classList.add('hidden');
+            
+            // Activate Sidebar
+            const sidebar = document.getElementById('dashboard-sidebar');
+            sidebar.classList.remove('opacity-50', 'pointer-events-none');
+            
+            // Trigger Selection Logic
+            selectStudent(studentId);
+        };
+
+        // FILE UPLOAD
+        const handleFileUpload = (e, type) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const text = event.target.result;
+                const data = parseCSV(text);
+                if (type === 'students') {
+                    students = [...students, ...data];
+                    document.getElementById('student-count').textContent = students.length;
+                    document.getElementById('list-count').textContent = students.length;
+                }
+                if (type === 'tutors') {
+                    tutors = [...tutors, ...data];
+                    document.getElementById('tutor-count').textContent = tutors.length;
+                }
+                updateStudentList();
+            };
+            reader.readAsText(file);
+        };
+
+        // GET LOCATION
+        const getLocation = () => {
+            isLocating = true;
+            const btn = document.getElementById('location-btn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Detecting...';
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        document.getElementById('newStudent-lat').value = position.coords.latitude;
+                        document.getElementById('newStudent-long').value = position.coords.longitude;
+                        isLocating = false;
+                        btn.disabled = false;
+                        btn.textContent = '🎯 Detect My Location';
+                    }, 
+                    (error) => {
+                        console.error("Geolocation error:", error);
+                        alert("Browser blocked GPS. Filling in demo location (Patna) 📍");
+                        document.getElementById('newStudent-lat').value = 25.594;
+                        document.getElementById('newStudent-long').value = 85.137;
+                        isLocating = false;
+                        btn.disabled = false;
+                        btn.textContent = '🎯 Detect My Location';
+                    },
+                    { timeout: 5000 }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+                isLocating = false;
+                btn.disabled = false;
+                btn.textContent = '🎯 Detect My Location';
+            }
+        };
+
+        // ADD STUDENT
+        const handleAddStudent = (e) => {
+            e.preventDefault();
+            const name = document.getElementById('newStudent-name').value;
+            const subject = document.getElementById('newStudent-subject').value;
+            const grade = document.getElementById('newStudent-grade').value;
+            const lat = document.getElementById('newStudent-lat').value;
+            const long = document.getElementById('newStudent-long').value;
+
+            if (!name || !subject || !lat || !long) {
+                alert("Fill in all the fields.");
+                return;
+            }
+
+            const newId = `MANUAL_${Date.now()}`;
+            const studentObj = {
+                student_id: newId,
+                student_name: name,
+                required_subject: subject,
+                grade: grade || 'N/A',
+                location_lat: parseFloat(lat),
+                location_long: parseFloat(long)
+            };
+
+            students = [studentObj, ...students];
+            document.getElementById('student-count').textContent = students.length;
+            document.getElementById('list-count').textContent = students.length;
+            
+            updateStudentList();
+            
+            // Go to match flow (which opens overlay)
+            handleMatchButton();
+            
+            // Reset Form
+            document.getElementById('newStudent-name').value = '';
+            document.getElementById('newStudent-subject').value = '';
+            document.getElementById('newStudent-grade').value = '';
+            document.getElementById('newStudent-lat').value = '';
+            document.getElementById('newStudent-long').value = '';
+        };
+
+        // UPDATE SIDEBAR LIST
+        const updateStudentList = () => {
+            const listContainer = document.getElementById('student-list');
+            if (students.length === 0) {
+                listContainer.innerHTML = '<div class="p-4 text-center text-slate-400 text-sm">No students yet.</div>';
+                return;
+            }
+
+            listContainer.innerHTML = students.map(student => `
+                <button
+                    onclick="selectStudent('${student.student_id}')"
+                    class="student-btn w-full text-left p-3 rounded-lg text-sm transition-all border ${
+                        selectedStudentId === student.student_id 
+                            ? 'bg-indigo-50 border-indigo-200 text-indigo-900 shadow-sm ring-1 ring-indigo-200' 
+                            : 'border-transparent hover:bg-slate-50 text-slate-600'
+                    }"
+                >
+                    <div class="font-bold truncate">${student.student_name}</div>
+                    <div class="text-xs flex justify-between mt-1 opacity-75">
+                        <span>${student.required_subject}</span>
+                        ${student.student_id.startsWith('MANUAL') ? '<span class="bg-indigo-200 text-indigo-800 text-[10px] px-1 rounded">NEW</span>' : ''}
+                    </div>
+                </button>
+            `).join('');
+        };
+
+        // SELECT STUDENT (MAIN LOGIC)
+        const selectStudent = (studentId) => {
+            selectedStudentId = studentId;
+            updateStudentList(); // Highlight sidebar
+            
+            //BUFFERING
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.innerHTML = `
+                <div class="h-full flex flex-col items-center justify-center text-indigo-600 animate-fade-in">
+                    <div class="mb-6 relative">
+                         <span class="text-6xl animate-spin-slow block">⚙️</span>
+                         <span class="text-2xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">🧠</span>
+                    </div>
+                    <p class="text-2xl font-bold animate-pulse">Matching Tutors...</p>
+                    <p class="text-sm text-slate-400 mt-2">Scanning proximity & subjects</p>
+                </div>
+            `;
+
+            //DELAY (2 seconds)
+            setTimeout(() => {
+                displayRecommendations();
+            }, 2000);
+        };
+
+        // DISPLAY RECOMMENDATIONS
+        const displayRecommendations = () => {
+            const resultsContainer = document.getElementById('results-container');
+            const currentStudent = students.find(s => s.student_id === selectedStudentId);
+            
+            if (!currentStudent) return;
+
+            // Find matching tutors
+            const subjectMatches = tutors.filter(t => 
+                (t.subject && currentStudent.required_subject &&
+                t.subject.toLowerCase().includes(currentStudent.required_subject.toLowerCase())) || 
+                (currentStudent.required_subject.toLowerCase().includes((t.subject || '').toLowerCase()))
+            );
+
+            // Calculate distances and sort
+            const scoredTutors = subjectMatches.map(tutor => {
+                const latTutor = tutor.location_lat || tutor.location_lat_tutor;
+                const longTutor = tutor.location_long || tutor.location_long_tutor;
+                
+                const dist = calculateDistance(
+                    currentStudent.location_lat, 
+                    currentStudent.location_long, 
+                    latTutor,
+                    longTutor
+                );
+                
+                return { ...tutor, distance: dist };
+            });
+
+            scoredTutors.sort((a, b) => a.distance - b.distance);
+
+            // ANIMATE RESULTS 
+            const contentClass = "animate-fade-in";
+
+            if (scoredTutors.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="${contentClass}">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-2">Results for ${currentStudent.student_name}</h2>
+                        <p class="text-slate-500 text-sm mb-4">Target: ${currentStudent.required_subject} near <span class="font-mono bg-slate-100 px-1 rounded">${parseFloat(currentStudent.location_lat).toFixed(3)}, ${parseFloat(currentStudent.location_long).toFixed(3)}</span></p>
+                        <div class="bg-white p-12 rounded-xl text-center border-dashed border-2 border-slate-200">
+                            <span class="text-4xl block mb-2">🤷‍♂️</span>
+                            <p class="text-slate-500 font-medium">No matches found.</p>
+                            <p class="text-slate-400 text-xs">Try checking the subject name or adding more tutors.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            resultsContainer.innerHTML = `
+                <div class="${contentClass}">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Results for ${currentStudent.student_name}</h2>
+                    <p class="text-slate-500 text-sm mb-4">Target: ${currentStudent.required_subject} near <span class="font-mono bg-slate-100 px-1 rounded">${parseFloat(currentStudent.location_lat).toFixed(3)}, ${parseFloat(currentStudent.location_long).toFixed(3)}</span></p>
+                    <div class="grid gap-3">
+                        ${scoredTutors.map((tutor, idx) => `
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all flex justify-between items-center group">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold ${idx===0 ? 'bg-yellow-100 text-yellow-700 ring-2 ring-yellow-200' : 'bg-slate-100 text-slate-500'}">
+                                        ${idx + 1}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">${tutor.tutor_name}</h4>
+                                        <div class="text-xs text-slate-500 flex gap-2">
+                                            <span class="bg-slate-100 px-1.5 rounded border border-slate-200">${tutor.subject}</span>
+                                            <span class="flex items-center text-yellow-500">⭐ ${tutor.rating}</span>
+                                            <span>₹${tutor.hourly_rate}/hr</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-lg font-bold ${tutor.distance < 20 ? 'text-green-600' : 'text-slate-600'}">
+                                        ${tutor.distance} km
+                                    </div>
+                                    <div class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Distance</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        };
+    </script>
+
+</body>
+</html>

@@ -277,4 +277,5 @@ const TeacherSignup = ({ onNavigateToLogin }: TeacherSignupProps) => {
   );
 };
 
+
 export default TeacherSignup;
