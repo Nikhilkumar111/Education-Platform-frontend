@@ -1,113 +1,189 @@
-"use client"
+"use client";
 
-import React from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
-import { MapPin, School } from 'lucide-react'
+import React, { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { MapPin, School, Mail } from "lucide-react";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
+import UpdateProfileForm from "./UpdateProfileForm";
 
 interface DashboardProps {
-  name: string
-  className: string
-  school: string
-  location: string
-  avatarUrl: string
-
-  overallScore: number
-  assignmentsCompleted: number
-  totalAssignments: number
-  attendance: number
+  name: string;
+  grade: string;
+  school: string;
+  location: string;
+  avatarUrl: string;
+  Email: string;
+  overallScore: number;
+  assignmentsCompleted: number;
+  totalAssignments: number;
+  attendance: number;
+  walletBalance: number;
+  subjectsChosen: string[];
 }
 
-const Dashboard: React.FC<DashboardProps> = ({
-  name,
-  className,
-  school,
-  location,
-  avatarUrl,
-  overallScore,
-  assignmentsCompleted,
-  totalAssignments,
-  attendance,
-}) => {
+const Dashboard: React.FC<DashboardProps> = (initialProps) => {
+  const [profileData, setProfileData] = useState(initialProps);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleEditClick = () => setIsEditing(true);
+
+  const handleCloseForm = (updatedData?: Partial<DashboardProps>) => {
+    setIsEditing(false);
+    if (updatedData) {
+      setProfileData((prev) => ({ ...prev, ...updatedData }));
+    }
+  };
+
   return (
-    <div className="p-12">
-      <div className="bg-white rounded-lg shadow p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
+    <div className="p-12 space-y-8">
+ 
 
-        {/* Avatar */}
-        <Avatar className="w-24 h-24 border-4 border-blue-400">
-          <AvatarImage src={avatarUrl} />
-          <AvatarFallback>
-            {name.split(" ").map(n => n[0]).join("")}
-          </AvatarFallback>
-        </Avatar>
 
-        {/* Profile Info */}
-        <div className="flex-1 text-center md:text-left">
-          <h2 className="text-2xl font-bold text-slate-800 mb-1">{name}</h2>
-          <p className="text-slate-600 mb-2">{className} • {school}</p>
+ <div className="bg-white rounded-lg shadow p-8 flex flex-col md:flex-row gap-8 items-center md:items-start">
+  
+  {/* Avatar */}
+  <Avatar className="w-28 h-28 border-4 border-blue-500">
+    <AvatarImage src={profileData.avatarUrl} />
+    <AvatarFallback className="text-xl font-semibold">
+      {profileData.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")}
+    </AvatarFallback>
+  </Avatar>
 
-          {/* Location + School */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start text-sm text-slate-600">
-            <div className="flex items-center">
-              <MapPin className="w-4 h-4 mr-1" />
-              <span>{location}</span>
-            </div>
-            <div className="flex items-center">
-              <School className="w-4 h-4 mr-1" />
-              <span>{school}</span>
-            </div>
-          </div>
-        </div>
+  {/* Profile Info */}
+  <div className="flex-1 text-center md:text-left">
+    
+    {/* Name */}
+    <h2 className="text-3xl font-bold text-slate-800">
+      {profileData.name}
+    </h2>
+
+
+    {/* <h2 className="text-3xl font-bold text-slate-800">
+      {profileData.grade}
+    </h2> */}
+
+
+
+
+    {/* School */}
+    <p className="text-lg text-slate-600 mt-1">
+      {profileData.school || "N/A"}
+    </p>
+
+    {/* Details */}
+    <div className="mt-4 flex flex-col sm:flex-row gap-6 text-base text-slate-700 justify-center md:justify-start">
+      
+      <div className="flex items-center gap-2">
+        <MapPin className="w-5 h-5 text-blue-600" />
+        <span className="font-medium">
+          {profileData.location || "N/A"}
+        </span>
       </div>
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full mt-6">
+      <div className="flex items-center gap-2">
+        <School className="w-5 h-5 text-green-600" />
+        <span className="font-medium">
+          {profileData.school || "N/A"}
+        </span>
+      </div>
 
-        {/* Overall Score */}
-        <Card className="text-center shadow-md border-blue-200">
+      <div className="flex items-center gap-2">
+        <Mail className="w-5 h-5 text-purple-600" />
+        <span className="font-medium">
+          {profileData.Email || "N/A"}
+        </span>
+      </div>
+    </div>
+
+    {/* Subjects */}
+    <div className="mt-4 text-base text-gray-800">
+      <strong className="text-lg">Subjects:</strong>{" "}
+      {profileData.subjectsChosen.length
+        ? profileData.subjectsChosen.join(", ")
+        : "Not set"}
+    </div>
+
+    {/* Button */}
+    <button
+      onClick={handleEditClick}
+      className="mt-6 px-6 py-3 text-lg bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+    >
+      Update Profile
+    </button>
+  </div>
+</div>
+
+      {/* ================= Stats Section ================= */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Card className="text-center">
           <CardHeader>
-            <CardTitle className="text-lg">Overall Score</CardTitle>
-            <CardDescription>Performance score</CardDescription>
+            <CardTitle>Overall Score</CardTitle>
+            <CardDescription>Performance</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-blue-600">{overallScore}%</p>
-          </CardContent>
-        </Card>
-
-        {/* Assignments */}
-        <Card className="text-center shadow-md border-green-200">
-          <CardHeader>
-            <CardTitle className="text-lg">Assignments</CardTitle>
-            <CardDescription>Completed tasks</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-green-600">
-              {assignmentsCompleted} / {totalAssignments}
+            <p className="text-3xl font-bold text-blue-600">
+              {profileData.overallScore || 0}%
             </p>
           </CardContent>
         </Card>
 
-        {/* Attendance */}
-        <Card className="text-center shadow-md border-purple-200">
+        <Card className="text-center">
           <CardHeader>
-            <CardTitle className="text-lg">Attendance</CardTitle>
-            <CardDescription>Present rate</CardDescription>
+            <CardTitle>Assignments</CardTitle>
+            <CardDescription>Completed</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-purple-600">{attendance}%</p>
+            <p className="text-3xl font-bold text-green-600">
+              {profileData.assignmentsCompleted || 0} /{" "}
+              {profileData.totalAssignments || 0}
+            </p>
           </CardContent>
         </Card>
 
+        <Card className="text-center">
+          <CardHeader>
+            <CardTitle>Attendance</CardTitle>
+            <CardDescription>Present rate</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-purple-600">
+              {profileData.attendance || 0}%
+            </p>
+          </CardContent>
+        </Card>
       </div>
-    </div>
-  )
-}
 
-export default Dashboard
+      {/* Wallet */}
+      {/* <div className="text-center font-semibold">
+        Wallet Balance: ₹{profileData.walletBalance || 0}
+      </div> */}
+
+      {/* Update Profile Modal */}
+      {isEditing && (
+        <UpdateProfileForm
+          initialData={{
+            name: profileData.name,
+            Email: profileData.Email,
+            grade: profileData.grade,
+            location: profileData.location,
+            school: profileData.school,
+            subjectsChosen: profileData.subjectsChosen,
+            avatarUrl: profileData.avatarUrl,
+          }}
+          onClose={handleCloseForm}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Dashboard;

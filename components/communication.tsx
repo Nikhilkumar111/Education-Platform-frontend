@@ -1,33 +1,39 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { MessageSquare } from 'lucide-react'
-import { Button } from './ui/button'
-import { motion } from 'framer-motion'
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { MessageSquare } from "lucide-react";
+import { Button } from "./ui/button";
+import { motion } from "framer-motion";
 
 interface CommunicationProps {
-  onOpenMessages: () => void
+  onOpenMessages: () => void;
 }
 
-export const Communication: React.FC<CommunicationProps> = ({ onOpenMessages }) => {
+export const Communication: React.FC<CommunicationProps> = ({
+  onOpenMessages,
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
+      className="w-full flex justify-center"
     >
-      <Card className="border-blue-300 bg-gradient-to-br from-blue-50 to-blue-100 w-full max-w-md">
+     
+      <Card className="w-full max-w-md border-blue-300 bg-gradient-to-br from-blue-50 to-blue-100">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-blue-700">
             <MessageSquare className="w-5 h-5" />
             Communication
           </CardTitle>
         </CardHeader>
+
         <CardContent>
           <p className="text-sm text-blue-800 mb-4">
             Message your teachers directly and get replies through the system.
           </p>
-          <Button 
+
+          <Button
             onClick={onOpenMessages}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
           >
@@ -37,5 +43,5 @@ export const Communication: React.FC<CommunicationProps> = ({ onOpenMessages }) 
         </CardContent>
       </Card>
     </motion.div>
-  )
-}
+  );
+};

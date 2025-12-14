@@ -61,7 +61,7 @@ const TeacherSignup = ({ onNavigateToLogin }: TeacherSignupProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-150 py-15 my-8 md:py-17">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-150 py-10">
       <div className="container mx-auto px-4">
 
      

@@ -68,9 +68,10 @@ const MOCK_DATA = {
 export default function Performance() {
   const [data, setData] = useState(null);
 
-  // -------------------------------------------------------
-  // FETCH DYNAMIC DATA
-  // -------------------------------------------------------
+
+
+
+  
   useEffect(() => {
     async function loadData() {
       try {
