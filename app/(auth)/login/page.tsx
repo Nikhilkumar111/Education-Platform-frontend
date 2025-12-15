@@ -16,11 +16,9 @@ import { useLoginUserMutation } from "@/store/api/auth/authApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-
-
 const Login = () => {
   const dispatch = useDispatch();
-  const [loginUser, { isLoading }] = useLoginUserMutation();
+  const [loginUser] = useLoginUserMutation();
   // const [forgotPassword] = useForgotPasswordMutation();
 
   const [studentEmail, setStudentEmail] = useState("");
@@ -29,65 +27,79 @@ const Login = () => {
   const [teacherPassword, setTeacherPassword] = useState("");
   const router = useRouter();
 
-
-
-const handleStudentLogin = async () => {
-  try {
-    const response: any = await loginUser({
-      email: studentEmail,
-      password: studentPassword,
-      role: "student",
-    }).unwrap();
-
-    const user = response.data?.user;
-    const token = response.data?.token;
-
-    if (!user || !user._id) {
-      toast.error("Login failed: user ID missing");
-      return;
-    }
-
-    // ✅ Redux
-    dispatch(
-      setCredentials({
-        user,
-        token,
-      })
-    );
-
-    // ✅ localStorage (THIS WAS MISSING)
-    localStorage.setItem("authUser", JSON.stringify(user));
-    localStorage.setItem("authToken", token);
-
-    toast.success("Student logged in!");
-    router.push("/student/Dashboard/me");
-
-  } catch (err) {
-    console.error(err);
-    toast.error("Login failed!");
-  }
-};
-
-
-
-
-
-
-
-
-  const handleTeacherLogin = async () => {
+  const handleStudentLogin = async () => {
     try {
-      const result: any = await loginUser({ email: teacherEmail, password: teacherPassword, role: "teacher" }).unwrap();
-      dispatch(setCredentials(result));
-      alert("Teacher logged in!");
+      const response: any = await loginUser({
+        email: studentEmail,
+        password: studentPassword,
+        role: "student",
+      }).unwrap();
+
+      const user = response.data?.user;
+      const token = response.data?.token;
+
+      if (!user || !user._id) {
+        toast.error("Login failed: user ID missing");
+        return;
+      }
+
+      // ✅ Redux
+      dispatch(
+        setCredentials({
+          user,
+          token,
+        })
+      );
+
+      // ✅ localStorage
+      localStorage.setItem("authUser", JSON.stringify(user));
+      localStorage.setItem("authToken", token);
+
+      toast.success("Student logged in!");
+      router.push("/student/Dashboard/me");
+
     } catch (err) {
       console.error(err);
-      alert("Login failed!");
+      toast.error("Login failed!");
     }
   };
 
+  const handleTeacherLogin = async () => {
+    try {
+      const response: any = await loginUser({
+        email: teacherEmail,
+        password: teacherPassword,
+        role: "teacher",
+      }).unwrap();
 
+      const user = response.data?.user;
+      const token = response.data?.token;
 
+      if (!user || !user._id) {
+        toast.error("Login failed: user ID missing");
+        return;
+      }
+
+      // ✅ Redux
+      dispatch(
+        setCredentials({
+          user,
+          token,
+        })
+      );
+
+      // ✅ localStorage
+      localStorage.setItem("authUser", JSON.stringify(user));
+      localStorage.setItem("authToken", token);
+
+      toast.success("Teacher logged in!");
+      router.push("/teachers/Dashboard/me");
+
+    } catch (err) {
+      console.error(err);
+      toast.error("Login failed!");
+    }
+  };
 
   // const handleForgotPassword = async (email: string, role: "student" | "teacher") => {
   //   try {
@@ -99,9 +111,7 @@ const handleStudentLogin = async () => {
   //   }
   // };
 
-
-
-
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-500 via-white to-blue-500 flex justify-center items-center px-4 py-20">
       <Card className="w-full max-w-md border-2 border-slate-200 shadow-xl bg-white">

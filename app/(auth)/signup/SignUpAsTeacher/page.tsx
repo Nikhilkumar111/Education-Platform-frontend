@@ -1,7 +1,5 @@
 "use client";
 
-
-
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,12 +11,19 @@ import { GraduationCap, Lightbulb, DollarSign, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import  ProfilePictureUpload  from "@/components/ProfilePictureUpload";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useRegisterUserMutation } from "@/store/api/auth/authApi";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "@/store/feature/auth/authSlice";
+
+import { useRouter } from "next/navigation"; // ✅ import useRouter
 
 
 interface TeacherFormState {
   name: string;
   email: string;
   phone: string;
+  password:string;
   qualification: string;
   experience: string;
   subjects: string;
@@ -26,39 +31,113 @@ interface TeacherFormState {
   bio: string;
 }
 
-interface TeacherSignupProps {
-  onNavigateToLogin: () => void;
-}
 
-const TeacherSignup = ({ onNavigateToLogin }: TeacherSignupProps) => {
+
+const TeacherSignup = () => {
+
+  const dispatch = useDispatch();
+  const router = useRouter(); //  initialize router
+  const [registerUser, { isLoading }] = useRegisterUserMutation();
+
+
+
+
+
   const [formData, setFormData] = useState<TeacherFormState>({
     name: "",
     email: "",
     phone: "",
     qualification: "",
     experience: "",
+    password:"",
     subjects: "",
     hourlyRate: "",
     bio: ""
   });
 
-  const [profilePicture, setProfilePicture] = useState<{ file: File | null; previewUrl: string | null }>({
+  const [profilePicture, setProfilePicture] = useState<{
+    file: File | null;
+    previewUrl: string | null;
+  }>({
     file: null,
     previewUrl: null
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
+
+  const [showPassword, setShowPassword] = useState(false);
+
+
+
+
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value
     }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Teacher signup data:", formData, profilePicture);
-    // You can send FormData to backend here if needed
-  };
+
+    const fd = new FormData();
+    fd.append("name", formData.name);
+    fd.append("email", formData.email);
+    fd.append("phone", formData.phone);
+    fd.append("experience", formData.experience);
+    fd.append("password", formData.password);
+    fd.append("subjects", formData.subjects);
+    fd.append("hourlyRate",formData.hourlyRate);
+    fd.append("bio",formData.bio);
+
+    fd.append("role", "teacher");
+
+    if (profilePicture.file) {
+      fd.append("avatar", profilePicture.file);
+    }
+
+    
+    try {
+      const result = await registerUser(fd).unwrap();
+      dispatch(setCredentials(result));
+
+      toast.success("Teacher Registered Successfully!");
+      router.push("/login"); // ✅ redirect after successful signup
+    } catch (err: any) {
+      const errorMessage =
+        err?.data?.message || err?.error || "Signup failed!";
+      toast.error(errorMessage);
+    }
+  }; // ✅ FIXED — this closes the function correctly
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-150 py-10">
@@ -204,6 +283,20 @@ const TeacherSignup = ({ onNavigateToLogin }: TeacherSignupProps) => {
                       type="number"
                       placeholder="e.g., 500"
                       value={formData.hourlyRate}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                     <div className="space-y-2">
+                    <Label htmlFor="password">Password*</Label>
+                    <Input
+                      id="password"
+                      name="password"
+                      type="password"
+                      placeholder="xyze"
+                      value={formData.password}
                       onChange={handleChange}
                       required
                     />

@@ -6,7 +6,8 @@ import { studentApi } from "./api/student/studentApi";
 
 import walletReducer from "./feature/wallet/walletSlice";
 import { walletApi } from "./api/wallet/walletApi";
-
+import teacherReducer from "./feature/teacher/teacherSlice"
+import {teacherApi} from "./api/teacher/teacherApi"
 
 export const store = configureStore({
   reducer: {
@@ -14,10 +15,12 @@ export const store = configureStore({
     auth:authReducer,
     student:studentReducer,
     wallet:walletReducer,
-
+    teacher:teacherReducer,
     [authApi.reducerPath]: authApi.reducer,
     [studentApi.reducerPath]:studentApi.reducer,
-    [walletApi.reducerPath]:walletApi.reducer
+    [walletApi.reducerPath]:walletApi.reducer,
+    [teacherApi.reducerPath]:teacherApi.reducer
+
 //     [studentApi.reducerPath]: studentApi.reducer,
 //     [teacherApi.reducerPath]: teacherApi.reducer,
 
@@ -28,7 +31,8 @@ export const store = configureStore({
     getDefault().concat(
       authApi.middleware,
       studentApi.middleware,
-      walletApi.middleware
+      walletApi.middleware,
+      teacherApi.middleware
     ),
 });
 
