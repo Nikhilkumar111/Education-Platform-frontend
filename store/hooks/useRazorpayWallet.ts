@@ -36,7 +36,8 @@ export const useRazorpayWallet = (userId: string) => {
 
       // 2️⃣ Open Razorpay
       const rzp = new window.Razorpay({
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        // key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: "rzp_test_Bfn1uxrkPmW4RI",
         amount: order.amount,
         currency: "INR",
         order_id: order.id,

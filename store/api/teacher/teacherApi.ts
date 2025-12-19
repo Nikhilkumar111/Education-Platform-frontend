@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { BASE_URL } from "@/store/constant";
+
 
 export const teacherApi = createApi({
   reducerPath: "teacherApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api", // ✅ base API root
+    baseUrl: BASE_URL, // ✅ base API root
     credentials: "include",
   }),
   tagTypes: ["TeacherProfile", "TeacherTests", "Teachers"],
