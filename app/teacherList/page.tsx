@@ -44,9 +44,19 @@ const TeacherList = () => {
   );
 
   // Convert to array with capitalized first letter for display
-  const allSubjects = Array.from(allSubjectsSet).map(
-    (s) => s.charAt(0).toUpperCase() + s.slice(1)
-  );
+  // const allSubjects = Array.from(allSubjectsSet).map(
+  //   (s) => s.charAt(0).toUpperCase() + s.slice(1)
+  // );
+
+const allSubjects = Array.from(allSubjectsSet).map((s) => {
+  const subject = s as string;
+  return subject.charAt(0).toUpperCase() + subject.slice(1);
+});
+
+
+
+
+
 
   // ================= Filter teachers by subject =================
   const filteredTeachers = teachers.filter((teacher: any) => {
