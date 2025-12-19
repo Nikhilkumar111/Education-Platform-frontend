@@ -27,6 +27,7 @@ const UpdateProfileFormTeacher: React.FC<UpdateProfileFormTeacherProps> = ({
     experience: "",
     location: "",
     bio: "",
+    pricePerMonth: "", // ✅ ADDED
   });
 
   const [subjects, setSubjects] = useState<string[]>([]);
@@ -42,9 +43,9 @@ const UpdateProfileFormTeacher: React.FC<UpdateProfileFormTeacherProps> = ({
         experience: String(profile.experience ?? ""),
         location: profile.location ?? "",
         bio: profile.bio ?? "",
+        pricePerMonth: String(profile.pricePerMonth ?? ""), // ✅ ADDED
       });
 
-      // ✅ FIXED: correct field name
       setSubjects(profile.subjectsChosen ?? []);
     }
   }, [profile]);
@@ -79,8 +80,7 @@ const UpdateProfileFormTeacher: React.FC<UpdateProfileFormTeacherProps> = ({
     formPayload.append("experience", formData.experience);
     formPayload.append("location", formData.location);
     formPayload.append("bio", formData.bio);
-
-    // ✅ FIXED: backend field name
+    formPayload.append("pricePerMonth", formData.pricePerMonth); // ✅ ADDED
     formPayload.append("subjectsChosen", JSON.stringify(subjects));
 
     if (avatarFile) {
@@ -92,17 +92,14 @@ const UpdateProfileFormTeacher: React.FC<UpdateProfileFormTeacherProps> = ({
 
       toast.success("Profile updated successfully");
 
-      /* 🔁 UPDATE DASHBOARD STATE */
       onSave({
         phone: res.data.profile.phone,
         qualification: res.data.profile.qualification,
         experience: res.data.profile.experience,
-
-        // ✅ FIXED: keep naming consistent
         subjectsChosen: res.data.profile.subjectsChosen,
-
         location: res.data.profile.location,
         bio: res.data.profile.bio,
+        pricePerMonth: res.data.profile.pricePerMonth, // ✅ ADDED
         avatarUrl:
           res.data.profile.avatar ||
           profile?.user?.avatar ||
@@ -120,12 +117,7 @@ const UpdateProfileFormTeacher: React.FC<UpdateProfileFormTeacherProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <form
         onSubmit={handleSubmit}
-        className="
-          bg-white w-full max-w-md
-          rounded-2xl shadow-xl
-          p-5 sm:p-6
-          max-h-[90vh] overflow-y-auto
-        "
+        className="bg-white w-full max-w-md rounded-2xl shadow-xl p-5 sm:p-6 max-h-[90vh] overflow-y-auto"
       >
         <h2 className="text-xl sm:text-2xl font-bold text-center mb-6">
           Update Teacher Profile
@@ -157,7 +149,9 @@ const UpdateProfileFormTeacher: React.FC<UpdateProfileFormTeacherProps> = ({
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
+              onChange={(e) =>
+                setAvatarFile(e.target.files?.[0] || null)
+              }
             />
 
             {(avatarFile || profile?.avatar || profile?.user?.avatar) && (
@@ -199,6 +193,16 @@ const UpdateProfileFormTeacher: React.FC<UpdateProfileFormTeacherProps> = ({
             name="experience"
             placeholder="Experience (years)"
             value={formData.experience}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg"
+          />
+
+          {/* ✅ PRICE PER MONTH (ADDED, UI SAME) */}
+          <input
+            type="number"
+            name="pricePerMonth"
+            placeholder="Price Per Month (₹)"
+            value={formData.pricePerMonth}
             onChange={handleChange}
             className="w-full p-3 border rounded-lg"
           />

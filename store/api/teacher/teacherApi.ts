@@ -3,46 +3,65 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const teacherApi = createApi({
   reducerPath: "teacherApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/teachers",
-    credentials: "include", // ✅ required for cookies (auth)
+    baseUrl: "http://localhost:5000/api", // ✅ base API root
+    credentials: "include",
   }),
-  tagTypes: ["TeacherProfile", "TeacherTests"],
+  tagTypes: ["TeacherProfile", "TeacherTests", "Teachers"],
   endpoints: (builder) => ({
 
     /* ================= TEACHER PROFILE ================= */
 
-    // GET teacher profile
+    // GET logged-in teacher profile
     getTeacherProfile: builder.query<any, void>({
-      query: () => "/me",
+      query: () => "/teachers/me",
       providesTags: ["TeacherProfile"],
     }),
 
     // UPDATE teacher profile
     updateTeacherProfile: builder.mutation<any, FormData>({
       query: (formData) => ({
-        url: "/update",
+        url: "/teachers/update",
         method: "PUT",
-        body: formData, // ✅ FormData supported
+        body: formData,
       }),
-      invalidatesTags: ["TeacherProfile"],
+      invalidatesTags: ["TeacherProfile", "Teachers"],
     }),
+
+    /* ================= ALL TEACHERS ================= */
+
+    // GET all teachers (for listing)
+    getAllTeachers: builder.query<any, void>({
+      query: () => "/teachers",
+      providesTags: ["Teachers"],
+    }),
+
+  //get teacher by id -->> It means its profile 
+  
+getTeacherById: builder.query<any, string>({
+  query: (id) => `/teachers/${id}`,
+    providesTags: ["Teachers"],
+}),
+
+
+
 
     /* ================= TEST MANAGEMENT ================= */
 
     // CREATE test
     createTest: builder.mutation<any, Partial<any>>({
       query: (data) => ({
-        url: "/tests/create",
+        url: "/teachers/tests/create",
         method: "POST",
         body: data,
       }),
       invalidatesTags: ["TeacherTests"],
     }),
 
+
     // GET all tests created by teacher
-   // GET all tests for teacher
     showTests: builder.query<any, void>({
-      query: () => "/tests/all", // GET request
+      query: () => "/teachers/tests/all",
+      providesTags: ["TeacherTests"],
     }),
 
   }),
@@ -53,6 +72,9 @@ export const teacherApi = createApi({
 export const {
   useGetTeacherProfileQuery,
   useUpdateTeacherProfileMutation,
+  useGetAllTeachersQuery,
+  useGetTeacherByIdQuery,
   useCreateTestMutation,
   useShowTestsQuery,
+
 } = teacherApi;

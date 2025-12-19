@@ -52,7 +52,7 @@ export const Wallet = ({ userId }: { userId: string }) => {
           </p>
 
           <Button
-            onClick={() => rechargeWallet(500)}
+            onClick={() => rechargeWallet(2000)}
             className="w-full bg-yellow-500 hover:bg-yellow-600 text-slate-800"
           >
             <WalletIcon className="w-4 h-4 mr-2" />

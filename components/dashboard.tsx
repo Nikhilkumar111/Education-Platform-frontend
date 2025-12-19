@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { MapPin, School, Mail } from "lucide-react";
+import { MapPin, School, Mail  } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -59,17 +59,21 @@ const Dashboard: React.FC<DashboardProps> = (initialProps) => {
   </Avatar>
 
   {/* Profile Info */}
-  <div className="flex-1 text-center md:text-left">
+  <div className="flex-2 text-center md:text-left">
     
     {/* Name */}
     <h2 className="text-3xl font-bold text-slate-800">
       {profileData.name}
     </h2>
 
+<p className="mt-2 flex items-center gap-2 justify-center md:justify-start
+             text-lg md:text-xl font-medium text-slate-600">
+  <span className="font-semibold text-slate-800">Class</span>
+  {/* <span className="text-2xl md:text-3xl font-bold text-indigo-600"> */}
+    - {profileData.grade}th
+  {/* </span> */}
+</p>
 
-    {/* <h2 className="text-3xl font-bold text-slate-800">
-      {profileData.grade}
-    </h2> */}
 
 
 

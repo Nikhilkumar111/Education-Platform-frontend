@@ -42,6 +42,15 @@ const Login = () => {
         toast.error("Login failed: user ID missing");
         return;
       }
+    if (user.role !== "student") {
+      toast.error("You are not authorized as a Student");
+      return;
+    }
+
+
+
+
+
 
       // ✅ Redux
       dispatch(
@@ -64,42 +73,49 @@ const Login = () => {
     }
   };
 
-  const handleTeacherLogin = async () => {
-    try {
-      const response: any = await loginUser({
-        email: teacherEmail,
-        password: teacherPassword,
-        role: "teacher",
-      }).unwrap();
+const handleTeacherLogin = async () => {
+  try {
+    const response: any = await loginUser({
+      email: teacherEmail,
+      password: teacherPassword,
+      role: "teacher",
+    }).unwrap();
 
-      const user = response.data?.user;
-      const token = response.data?.token;
+    const user = response.data?.user;
+    const token = response.data?.token;
 
-      if (!user || !user._id) {
-        toast.error("Login failed: user ID missing");
-        return;
-      }
-
-      // ✅ Redux
-      dispatch(
-        setCredentials({
-          user,
-          token,
-        })
-      );
-
-      // ✅ localStorage
-      localStorage.setItem("authUser", JSON.stringify(user));
-      localStorage.setItem("authToken", token);
-
-      toast.success("Teacher logged in!");
-      router.push("/teachers/Dashboard/me");
-
-    } catch (err) {
-      console.error(err);
-      toast.error("Login failed!");
+    if (!user || !user._id) {
+      toast.error("Login failed: user ID missing");
+      return;
     }
-  };
+
+    //  Check role properly
+    if (user.role !== "teacher") {
+      toast.error("You are not authorized as a Teacher");
+      return;
+    }
+
+    // ✅ Redux
+    dispatch(
+      setCredentials({
+        user,
+        token,
+      })
+    );
+
+    // ✅ localStorage
+    localStorage.setItem("authUser", JSON.stringify(user));
+    localStorage.setItem("authToken", token);
+
+    toast.success("Teacher logged in!");
+    router.push("/teachers/Dashboard/me");
+
+  } catch (err) {
+    console.error(err);
+    toast.error("Login failed!");
+  }
+};
+
 
   // const handleForgotPassword = async (email: string, role: "student" | "teacher") => {
   //   try {

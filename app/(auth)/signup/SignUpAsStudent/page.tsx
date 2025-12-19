@@ -38,7 +38,7 @@ interface StudentFormState {
   name: string;
   email: string;
   phone: string;
-  class: string;
+  grade: string;
   school: string;
   subjects: string;
   password: string;
@@ -54,7 +54,7 @@ const SignupStudent = () => {
     name: "",
     email: "",
     phone: "",
-    class: "",
+    grade: "",
     school: "",
     subjects: "",
     password: "",
@@ -87,6 +87,7 @@ const SignupStudent = () => {
     fd.append("name", formData.name);
     fd.append("email", formData.email);
     fd.append("phone", formData.phone);
+    fd.append("grade",formData.grade);
     fd.append("school", formData.school);
     fd.append("subjects", formData.subjects);
     fd.append("password", formData.password);
@@ -230,12 +231,12 @@ const SignupStudent = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="class">Class/Grade *</Label>
+                    <Label htmlFor="grade">Class/Grade *</Label>
                     <Input
-                      id="class"
-                      name="class"
+                      id="grade"
+                      name="grade"
                       placeholder="e.g., Grade 10"
-                      value={formData.class}
+                      value={formData.grade}
                       onChange={handleChange}
                       required
                     />

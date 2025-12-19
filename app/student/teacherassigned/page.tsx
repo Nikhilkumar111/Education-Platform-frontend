@@ -1,124 +1,97 @@
 "use client";
+
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
-import { useState, useEffect } from "react";
-
-interface AssignedTeacher {
-  teacherId: number;
-  teacherName: string;
-  subject: string;
-  email: string;
-}
-
-interface StudentAssignedResponse {
-  studentId: number;
-  studentName: string;
-  assignedTeachers: AssignedTeacher[];
-}
-
-
-
-
-const mockStudentAssignedData: StudentAssignedResponse = {
-  studentId: 21,
-  studentName: "Alice Johnson",
-  assignedTeachers: [
-    {
-      teacherId: 1,
-      teacherName: "Mr. John Doe",
-      subject: "Mathematics",
-      email: "john.doe@school.com",
-    },
-    {
-      teacherId: 3,
-      teacherName: "Ms. Emily Carter",
-      subject: "Science",
-      email: "emily.carter@school.com",
-    },
-  ],
-};
+import { useGetStudentSubscriptionsQuery } from "@/store/api/subscription/subscriptionApi";
+import { useSelector } from "react-redux";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 const AssignedTeacherPage = () => {
-  const [data, setData] = useState<StudentAssignedResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const studentId = useSelector((state: any) => state.auth.user?._id);
+
+  const { data, isLoading, isError } = useGetStudentSubscriptionsQuery(studentId, {
+    skip: !studentId,
+  });
 
   useEffect(() => {
-    setTimeout(() => {
-      setData(mockStudentAssignedData);
-      setLoading(false);
-    }, 800);
-  }, []);
+    if (isError) toast.error("Failed to load assigned teachers");
+  }, [isError]);
 
-  if (loading) return <p>Loading assigned teachers...</p>;
-  if (!data) return <p>Error loading data.</p>;
+  if (isLoading)
+    return <p className="text-center mt-10 text-lg text-gray-700">Loading assigned teachers...</p>;
+
+  if (isError)
+    return <p className="text-center mt-10 text-lg text-red-500">Error loading data</p>;
+
+  const studentName = data?.data?.studentName ?? "Me";
+  const assignedTeachers = data?.data?.assignedTeachers ?? [];
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto py-6">
-      <h1 className="text-3xl font-bold text-center">
-        Assigned Teachers for{" "}
-        <span className="text-blue-600">{data.studentName } or Me</span>
+    <div className="max-w-5xl mx-auto py-20 px-4 space-y-8">
+      <h1 className="text-3xl font-bold text-center mb-6">
+        Assigned Teachers for {studentName}
       </h1>
 
-      {/* If no teacher assigned */}
-      {data.assignedTeachers.length === 0 && (
-        <Card className="shadow-lg border border-gray-200 rounded-xl p-4">
+      {assignedTeachers.length === 0 ? (
+        <Card className="p-6 bg-blue-50 border-blue-200 shadow-md">
           <CardHeader>
-            <CardTitle className="text-xl font-bold">No Assigned Teacher</CardTitle>
-            <CardDescription className="text-gray-500">
-              You are currently not assigned to any teacher.
+            <CardTitle className="text-2xl font-bold text-blue-700">No Active Subscription</CardTitle>
+            <CardDescription className="text-blue-600">
+              You don’t have any active teacher subscriptions.
             </CardDescription>
           </CardHeader>
         </Card>
+      ) : (
+        <div className="grid gap-6">
+          {assignedTeachers.map((teacher: any) => (
+            <Card
+              key={teacher.subscriptionId}
+              className="border rounded-2xl shadow-lg hover:shadow-2xl transition-all p-4"
+            >
+              <CardHeader className="bg-gray-100 rounded-t-2xl p-4">
+                <CardTitle className="text-2xl font-bold">{teacher.teacherName ?? "N/A"}</CardTitle>
+                <CardDescription>{teacher.subject ?? "General"}</CardDescription>
+              </CardHeader>
+
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <Info label="Student" value={studentName} />
+                <Info label="Teacher Email" value={teacher.email ?? "N/A"} />
+                <Info label="Mode" value={teacher.mode ?? "N/A"} />
+                <Info label="Amount Paid" value={`₹${teacher.amount ?? 0}`} />
+                <Info
+                  label="Subscription Ends"
+                  value={teacher.endDate ? new Date(teacher.endDate).toLocaleDateString() : "N/A"}
+                />
+                <Info
+                  label="Grace Period Until"
+                  value={teacher.graceEndDate ? new Date(teacher.graceEndDate).toLocaleDateString() : "N/A"}
+                />
+              </CardContent>
+
+              <CardFooter className="border-t mt-4 text-sm text-gray-600">
+                Subscription ID: {teacher.subscriptionId}
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
       )}
-
-      {/* Attractive Cards */}
-      <div className="grid gap-6">
-        {data.assignedTeachers.map((teacher) => (
-          <Card
-            key={teacher.teacherId}
-            className="shadow-xl border border-gray-100 rounded-2xl hover:shadow-2xl transition-all p-4 bg-white"
-          >
-            <CardHeader className="pb-2">
-              <CardTitle className="text-2xl font-semibold text-gray-800">
-                {teacher.teacherName}
-              </CardTitle>
-              <CardDescription className="text-blue-600 font-medium text-lg">
-                {teacher.subject}
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-4 pt-4">
-
-              {/* Student Section */}
-              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="font-semibold text-gray-700 mb-1">Student</p>
-                <p className="text-sm text-gray-600">{data.studentName}</p>
-              </div>
-
-              {/* Teacher Email */}
-              <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <p className="font-semibold text-gray-700 mb-1">Teacher Email</p>
-                <p className="text-sm text-gray-600">{teacher.email}</p>
-              </div>
-
-            </CardContent>
-
-            <CardFooter className="pt-2 border-t border-gray-200 mt-4">
-              <p className="text-sm text-gray-500">
-                Teacher ID: {teacher.teacherId}
-              </p>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
     </div>
   );
 };
+
+// Info component for card rows
+const Info = ({ label, value }: { label: string; value: string | number }) => (
+  <div className="p-2 border-l-4 border-indigo-500 rounded bg-gray-50">
+    <p className="font-semibold text-gray-700">{label}</p>
+    <p className="text-gray-600">{value}</p>
+  </div>
+);
 
 export default AssignedTeacherPage;

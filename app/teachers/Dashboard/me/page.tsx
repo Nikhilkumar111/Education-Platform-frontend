@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Edit,
+  // Edit,
   MapPin,
   Phone,
   GraduationCap,
@@ -42,6 +42,7 @@ const TeacherDashboard = () => {
         studentsAssigned: profile.studentsAssigned || 0,
         avatarUrl: profile.avatar || profile.user?.avatar || "",
         bio: profile.bio || "",
+        pricePerMonth: profile.pricePerMonth || 0,
         offlineAvailable: profile.offlineAvailable ?? false,
       });
     }
@@ -177,6 +178,12 @@ const TeacherDashboard = () => {
             icon={<Users className="text-purple-600" />}
             title="Students Assigned"
             value={teacher.studentsAssigned}
+          />
+
+               <StatCard
+            icon={<Users className="text-purple-600" />}
+            title="Price perMonth"
+            value={teacher.pricePerMonth}
           />
         </div>
 

@@ -402,6 +402,7 @@ const Navbar = () => {
   ];
 
   const dashboardMenu: MenuItem[] = [
+     { title:"Dashboard", description: "Student Dashboard", href: "/student/Dashboard/me" },
     { title: "Performance", description: "Progress reports", href: "/student/performance" },
     { title: "Schedule", description: "Upcoming classes", href: "/student/schedule" },
     { title: "Assignments", description: "Tasks & submissions", href: "/student/assignments" },
@@ -410,7 +411,7 @@ const Navbar = () => {
 
   const teachersMenu: MenuItem[] = [
     { title: "Nearest Tutor", description: "Choose Nearest Tutor", href: "https://ml-six-xi.vercel.app" },
-    { title: "Teacher List", description: "Browse all teachers", href: "/teachers" },
+    { title: "Teacher List", description: "Browse all teachers", href: "/teacherList" },
     { title: "My Tutors", description: "Your selected tutors", href: "/student/teacherassigned" },
     { title: "Become a Tutor", description: "Apply as instructor", href: "/signup/SignUpAsTeacher" },
   ];

@@ -27,7 +27,7 @@ interface TeacherFormState {
   qualification: string;
   experience: string;
   subjects: string;
-  hourlyRate: string;
+  pricePerMonth: number;
   bio: string;
 }
 
@@ -51,9 +51,10 @@ const TeacherSignup = () => {
     experience: "",
     password:"",
     subjects: "",
-    hourlyRate: "",
+    pricePerMonth: 0,
     bio: ""
   });
+  
 
   const [profilePicture, setProfilePicture] = useState<{
     file: File | null;
@@ -89,7 +90,7 @@ const TeacherSignup = () => {
     fd.append("experience", formData.experience);
     fd.append("password", formData.password);
     fd.append("subjects", formData.subjects);
-    fd.append("hourlyRate",formData.hourlyRate);
+    fd.append("pricePerMonth", String(formData.pricePerMonth)); // ✅ fixed
     fd.append("bio",formData.bio);
 
     fd.append("role", "teacher");
@@ -275,18 +276,20 @@ const TeacherSignup = () => {
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="hourlyRate">Hourly Rate (₹) *</Label>
+              <div className="space-y-2">
+                    <Label htmlFor="pricePerMonth">pricePerMonth (₹) *</Label>
                     <Input
-                      id="hourlyRate"
-                      name="hourlyRate"
+                      id="pricePerMonth"
+                      name="pricePerMonth"
                       type="number"
                       placeholder="e.g., 500"
-                      value={formData.hourlyRate}
+                      value={formData.pricePerMonth}
                       onChange={handleChange}
+                      min={1}
                       required
                     />
                   </div>
+
                 </div>
                 <div>
                      <div className="space-y-2">
