@@ -170,7 +170,8 @@ const handleTeacherLogin = async () => {
                 </div>
 
                 <div className="text-right">
-                  <button type="button" className="text-blue-600 hover:underline text-sm" onClick={() => handleForgotPassword(studentEmail, "student")}>
+                  {/* onClick={() => handleForgotPassword(studentEmail, "student")} */}
+                  <button type="button" className="text-blue-600 hover:underline text-sm" >
                     Forgot password?
                   </button>
                 </div>
